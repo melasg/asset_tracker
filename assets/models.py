@@ -55,6 +55,7 @@ class Software(Asset):
 	class Meta:
 		verbose_name = verbose_name_plural = 'Software'
 
+
 class System(Hardware):
 	IP = models.CharField(max_length=30,default='',unique=True, validators=[validate_ipv4_address],blank=True)
 	MAC_address = models.CharField(max_length=50,default='',unique=True)
