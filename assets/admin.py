@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Asset, Hardware, Software, System, Switch, Clust
+from .models import Asset, Hardware, Software, System, Switch, Clust, Component, Vendor, Partition
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -11,7 +11,7 @@ from import_export.admin import ImportExportModelAdmin
 '''---------------------------------------------'''
 
 class AssetAdmin(admin.ModelAdmin):
-	search_fields = ('name','active', 'vendor', 'order_number', 'customer_PO', 'account', 'owner')
+	search_fields = ('name','active', 'order_number', 'customer_PO', 'account', 'owner')
 	list_display = ('name', 'active', 'contract_end')
 	list_filter = ('active', 'asset_type', 'vendor', 'owner', 'account')
 	fieldsets = (('General Information', {
@@ -58,9 +58,9 @@ class SystemResource(resources.ModelResource):
 
 class SystemAdmin(HardwareAdmin,ImportExportModelAdmin):
 	search_fields = HardwareAdmin.search_fields + ('IP', 'MAC_address')
-	list_filter = HardwareAdmin.list_filter + ('GPU_card',)
+	list_filter = HardwareAdmin.list_filter + ('component',)
 	fieldsets = HardwareAdmin.fieldsets + (('System Information', {
-			'fields': ('IP', 'MAC_address', 'CPU_cores', 'memory_GB', 'primary_disk_size_GB', 'watts', 'GPU_card', 'GPU_quantity')}),)
+			'fields': ('IP', 'MAC_address', 'CPU_cores', 'memory_GB', 'primary_disk_size_GB', 'watts', 'component', 'component_quantity')}),)
 	resource_class = SystemResource
 
 '''-----------------------------------------------------'''
@@ -87,7 +87,6 @@ class ClustResource(resources.ModelResource):
 		exclude = ('system_ptr', 'hardware_ptr', 'asset_ptr')
 
 class ClustAdmin(SystemAdmin, ImportExportModelAdmin):
-	search_fields = SystemAdmin.search_fields + ('partition',)
 	list_filter = SystemAdmin.list_filter + ('partition',)
 	fieldsets = SystemAdmin.fieldsets + (('Clust Information', {
 			'fields': ('partition',)}),)
@@ -95,9 +94,34 @@ class ClustAdmin(SystemAdmin, ImportExportModelAdmin):
 
 '''------------------------------------------------------'''
 
+class ComponentAdmin(admin.ModelAdmin):
+	search_fields = ('name',)
+	list_filter = ('name',)
+	fieldsets = (('Component Information', {
+			'fields': ('name',)}),)
+
+'''-------------------------------------------------------'''
+
+class VendorAdmin(admin.ModelAdmin):
+	search_fields = ('vendor_name',)
+	list_filter = ('vendor_name',)
+	fieldsets = (('Vendor Information', {
+			'fields': ('vendor_name',)}),)
+
+'''--------------------------------------------------------'''
+
+class PartitionAdmin(admin.ModelAdmin):
+	search_fields = ('partition',)
+	list_filter = ('partition',)
+	fieldsets = (('Partition Information', {
+		'fields': ('partition',)}),)
+
 admin.site.register(Asset, AssetAdmin)
 admin.site.register(Hardware, HardwareAdmin)
 admin.site.register(Software, SoftwareAdmin)
 admin.site.register(System, SystemAdmin)
 admin.site.register(Switch, SwitchAdmin)
 admin.site.register(Clust, ClustAdmin)
+admin.site.register(Component, ComponentAdmin)
+admin.site.register(Vendor, VendorAdmin)
+admin.site.register(Partition, PartitionAdmin)
