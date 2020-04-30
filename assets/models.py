@@ -2,6 +2,16 @@ from django.db import models
 from datetime import date
 from django.core.validators import validate_ipv4_address
 
+class Vendor(models.Model):
+	vendor_name = models.CharField(max_length=50, blank=True)
+
+	def __str__(self):
+		return self.vendor_name
+
+	class Meta:
+		verbose_name = 'Vendor'
+		verbose_name_plural = 'Vendors'
+
 class Asset(models.Model):
 	name = models.CharField(max_length=30, unique=True)
 	active = models.BooleanField(default=True)
@@ -13,7 +23,8 @@ class Asset(models.Model):
                                                                 ('SWITCH','Switch'),
                                                                 ('CLUST','Clust')])
 
-	vendor = models.CharField(max_length=50,default='',blank=True)
+	vendor_char = models.CharField(max_length=50,blank=True)
+	vendor = models.ManyToManyField(Vendor,blank=True)
 	contract_start = models.DateField(default=date.today,blank=True)
 	contract_end = models.DateField(default=date.today,blank=True)
 	received_date = models.DateField(default=date.today,blank=True)
@@ -55,6 +66,15 @@ class Software(Asset):
 	class Meta:
 		verbose_name = verbose_name_plural = 'Software'
 
+class Component(models.Model):
+	name = models.CharField(max_length=50,blank=True)
+
+	def __str__(self):
+		return self.name
+
+	class Meta:
+		verbose_name = 'Component'
+		verbose_name_plural = 'Components'
 
 class System(Hardware):
 	IP = models.CharField(max_length=30,default='',unique=True, validators=[validate_ipv4_address],blank=True)
@@ -63,8 +83,9 @@ class System(Hardware):
 	memory_GB = models.CharField(max_length=10,default='',blank=True)
 	primary_disk_size_GB = models.CharField(max_length=10,default='',blank=True)
 	watts = models.CharField(max_length=10,default='',blank=True)
-	GPU_card = models.CharField(max_length=50,default='',blank=True)
-	GPU_quantity = models.IntegerField(default=0)
+	component_char = models.CharField(max_length=50,default='',blank=True)
+	component = models.ManyToManyField(Component,blank=True)
+	component_quantity = models.IntegerField(default=0,blank=True)
 
 	def __str_(self):
 		return self.name
@@ -89,19 +110,20 @@ class Switch(Hardware):
 
 #class Drive(Hardware):
 #class Tray(Hardware):
+class Partition(models.Model):
+	partition = models.CharField(max_length=50,default='',blank=True)
+
+	def __str__(self):
+		return self.partition
+
+	class Meta:
+		verbose_name = 'Partition'
+		verbose_name_plural = 'Partitions'
 
 class Clust(System):
-# MAKE MULTI-SELECTABLE. WANT TO BE ABLE TO SELECT MULTIPLE PARTITIONS
-	partition = models.CharField(max_length=30,default='',blank=True,
-					choices=[
-                                        	('HEAD','Head'),
-                                        	('batch','batch'), #AMD
-                                                ('intel','intel'),
-                                                ('highmem','highmem'),
-                                                ('GPU', 'GPU'),
-                                                ('MISC', 'Misc'),
-                                                ('HYPERVISOR', 'Hypervisor')])
-	
+	partition_char = models.CharField(max_length=50,default='',blank=True)
+	partition = models.ManyToManyField(Partition,blank=True)
+
 	def __str__(self):
 		return self.name
 

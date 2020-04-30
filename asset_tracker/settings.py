@@ -25,7 +25,7 @@ SECRET_KEY = 'p(r4-&za4&xbsi=)cna1%mm=%ibran)5k%4s95a3hz77hggneh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'admintools.infra.hpcc.ucr.edu']
+ALLOWED_HOSTS = ['0.0.0.0','10.101.20.62','admintools.infra.hpcc.ucr.edu','admintools.hpcc.ucr.edu']
 
 
 # Application definition
@@ -111,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Pacific'
 
 USE_I18N = True
 
