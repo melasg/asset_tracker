@@ -67,19 +67,6 @@ class Software(Asset):
 	class Meta:
 		verbose_name = verbose_name_plural = 'Software'
 
-class GPFS(Software):
-	CPU = models.CharField(max_length=30,default='')
-	RAM = models.CharField(max_length=30,default='')
-	serial_number = models.CharField(max_length=30,default='')
-	GPFS_count = models.CharField(max_length=30,default='',blank=True)
-	hardware_contract_end = models.DateField(default=date.today,blank=True)
-
-	def __str__(self):
-		return self.name
-
-	class Meta:
-		verbose_name = verbose_name_plural = 'GPFS'
-
 class Component(models.Model):
 	name = models.CharField(max_length=50,blank=True)
 
