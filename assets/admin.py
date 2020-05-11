@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Asset, Hardware, Software, System, Switch, Clust, Component, Vendor, Partition
+from .models import Asset, Hardware, Software, System, Switch, Clust, Component, Vendor, Partition, GPFS
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -47,6 +47,19 @@ class SoftwareAdmin(AssetAdmin, ImportExportModelAdmin):
 	fieldsets = AssetAdmin.fieldsets + (('Software Information', {
 			'fields': ('vendor_customer_number', 'quantity', 'part_number', 'description')}),)
 	resource_class = SoftwareResource
+
+'''--------------------------------------------------'''
+
+class GPFSresource(resources.ModelResource):
+	
+	class Meta:
+		model = GPFS
+
+class GPFSadmin(SoftwareAdmin, ImportExportModelAdmin):
+	search_fields = SoftwareAdmin.search_fields + ('serial_number', 'GPFS_count')
+	fieldsets = SoftwareAdmin.fieldsets + (('Additional GPFS License Information', {
+			'fields': ('CPU', 'RAM', 'GPFS_count', 'hardware_contract_end')}),)
+	resource_class = GPFSresource
 
 '''--------------------------------------------------'''
 
@@ -119,6 +132,7 @@ class PartitionAdmin(admin.ModelAdmin):
 admin.site.register(Asset, AssetAdmin)
 admin.site.register(Hardware, HardwareAdmin)
 admin.site.register(Software, SoftwareAdmin)
+admin.site.register(GPFS, GPFSadmin)
 admin.site.register(System, SystemAdmin)
 admin.site.register(Switch, SwitchAdmin)
 admin.site.register(Clust, ClustAdmin)
